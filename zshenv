@@ -14,4 +14,4 @@ export HISTSIZE=10000
 export SAVEHIST=10000
 
 # VIM config
-export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/dotfiles/vimrc" | source $MYVIMRC'
+export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/dotfiles/vim/vimrc" | source $MYVIMRC'

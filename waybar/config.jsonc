@@ -1,0 +1,33 @@
+// -*- mode: jsonc -*-
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    // "margin-left": 2300,
+    "height": 34, // Waybar height (to be removed for auto height)
+    //"width": 128, // Waybar width (to be removed for auto width)
+    "include": [
+        "~/.config/waybar/modules.json"
+    ],
+    // Choose the order of the modules
+    "modules-left": [
+    ],
+    "modules-center": [
+    ],
+    "modules-right": [
+        "hyprland/workspaces",
+        "bluetooth",
+        "wireplumber"
+    ],
+    "margin": 0, // Margin around bar (px)
+    "spacing": 4, // Spacing between modules (px)
+    // name: "" // Name added as CSS class, for styling multiple waybars
+    "mode": "dock", // Select preconfigured display mode
+    "start_hidden": false, // Whether to start the bar hidden
+    "modifier-reset": "press", // Timing of modifier key to reset bar visibility
+    "exclusive": true, // Request exclusive zone from hyprland
+    "fixed-center": true, // Use fixed center for modules-center block
+    "passthrough": false, // Pass any pointer events to window under bar
+    "ipc": false, // Subscribe to sway IPC bar configuration
+   // "id": "" // bar_id for the Sway IPC
+    "reload_style_on_change": true // Reload CSS when it is changed, set to false once have CSS fixed 
+}
