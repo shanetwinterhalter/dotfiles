@@ -24,3 +24,7 @@ _comp_options+=(globdots) # Include hidden files in completion
 PS1="%B%F{cyan}[%1~] > %f%b"
 
 source ~/.config/dotfiles/$(uname)-zsh-conf
+
+if [[ -f ${ZDOTDIR:a}/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source ${ZDOTDIR:a}/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi

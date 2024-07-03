@@ -9,6 +9,10 @@ function create_link {
     fi
 }
 
+# Download zsh plugins
+mkdir -p ${script_dir}/zsh-plugins
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+
 create_link zshenv ~/.zshenv
 create_link zshrc ${script_dir}/.zshrc
 create_link kitty ~/.config/kitty
@@ -20,3 +24,4 @@ if [[ $(uname) == "Linux" ]]; then
   create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
   create_link electron/electron-flags.conf ~/.config/electron-flags.conf
 fi
+
