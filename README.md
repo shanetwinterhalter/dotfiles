@@ -4,7 +4,4 @@
 
 Clone this repo into `~/.config`
 
-Create a link to the .zshenv file in your home directory:
-```
-ln -s ~/.config/dotfiles/.zshenv .zshenv
-```
+Everything can then be put into the correct location by running `setup.sh`
