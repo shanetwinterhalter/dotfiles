@@ -12,8 +12,11 @@ function create_link {
 create_link zshenv ~/.zshenv
 create_link zshrc ${script_dir}/.zshrc
 create_link kitty ~/.config/kitty
-create_link hypr ~/.config/hypr
-create_link waybar ~/.config/waybar
-create_link rofi ~/.config/rofi
-create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
-create_link electron/electron-flags.conf ~/.config/electron-flags.conf
+
+if [[ $(uname) == "Linux" ]]; then
+  create_link hypr ~/.config/hypr
+  create_link waybar ~/.config/waybar
+  create_link rofi ~/.config/rofi
+  create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
+  create_link electron/electron-flags.conf ~/.config/electron-flags.conf
+fi

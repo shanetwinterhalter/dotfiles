@@ -23,4 +23,4 @@ _comp_options+=(globdots) # Include hidden files in completion
 # Prompt style
 PS1="%B%F{cyan}[%1~] > %f%b"
 
-source ~/.config/dotfiles/$(hostname)-zsh-conf
+source ~/.config/dotfiles/$(uname)-zsh-conf
