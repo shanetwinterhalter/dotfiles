@@ -10,7 +10,7 @@ function create_link {
 }
 
 create_link zshenv ~/.zshenv
-create_link zshrc .zshrc
+create_link zshrc ${script_dir}/.zshrc
 create_link kitty ~/.config/kitty
 create_link hypr ~/.config/hypr
 create_link waybar ~/.config/waybar
