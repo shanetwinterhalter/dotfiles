@@ -11,7 +11,7 @@ function create_link {
 
 # Download zsh plugins
 mkdir -p ${script_dir}/zsh-plugins
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git zsh-plugins/zsh-syntax-highlighting
 
 create_link zshenv ~/.zshenv
 create_link zshrc ${script_dir}/.zshrc
