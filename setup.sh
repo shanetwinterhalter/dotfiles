@@ -40,6 +40,14 @@ if command -v rofi &> /dev/null; then
   create_link rofi ~/.config/rofi
 fi
 
+if command -v vim &> /dev/null; then
+  create_link vim ~/.config/vim
+fi
+
+if command -v nvim &> /dev/null; then
+  create_link nvim ~/.config/nvim
+fi
+
 if command -v spotify-launcher &> /dev/null; then
   create_link electron/electron-flags.conf ~/.config/electron-flags.conf
   create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
