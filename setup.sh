@@ -9,19 +9,40 @@ function create_link {
     fi
 }
 
+function install_zsh_plugin {
+    if [ -d ${script_dir}/zsh-plugins/$1 ]; then
+        cd ${script_dir}/zsh-plugins/$1 && git pull && cd ${script_dir}
+    else
+        git clone $2 zsh-plugins/$1
+    fi
+ }
+
 # Download zsh plugins
 mkdir -p ${script_dir}/zsh-plugins
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git zsh-plugins/zsh-syntax-highlighting
+install_zsh_plugin zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting.git  
 
 create_link zshenv ~/.zshenv
 create_link zshrc ${script_dir}/.zshrc
-create_link kitty ~/.config/kitty
 
-if [[ $(uname) == "Linux" ]]; then
-  create_link hypr ~/.config/hypr
-  create_link waybar ~/.config/waybar
-  create_link rofi ~/.config/rofi
-  create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
-  create_link electron/electron-flags.conf ~/.config/electron-flags.conf
+if command -v kitty &> /dev/null; then
+    create_link kitty ~/.config/kitty
 fi
+
+if command -v Hyprlandi &> /dev/null; then
+  create_link hypr ~/.config/hypr
+fi
+
+if command -v waybar &> /dev/null; then
+  create_link waybar ~/.config/waybar
+fi
+
+if command -v rofii &> /dev/null; then
+  create_link rofi ~/.config/rofi
+fi
+
+if command -v spotify-launcher &> /dev/null; then
+  create_link electron/electron-flags.conf ~/.config/electron-flags.conf
+  create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
+fi
+
 
