@@ -28,7 +28,7 @@ if command -v kitty &> /dev/null; then
     create_link kitty ~/.config/kitty
 fi
 
-if command -v Hyprlandi &> /dev/null; then
+if command -v Hyprland &> /dev/null; then
   create_link hypr ~/.config/hypr
 fi
 
@@ -36,7 +36,7 @@ if command -v waybar &> /dev/null; then
   create_link waybar ~/.config/waybar
 fi
 
-if command -v rofii &> /dev/null; then
+if command -v rofi &> /dev/null; then
   create_link rofi ~/.config/rofi
 fi
 
@@ -44,5 +44,4 @@ if command -v spotify-launcher &> /dev/null; then
   create_link electron/electron-flags.conf ~/.config/electron-flags.conf
   create_link spotify/spotify-launcher.conf ~/.config/spotify-launcher.conf
 fi
-
 
