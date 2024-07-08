@@ -93,6 +93,7 @@ require("lazy").setup({
     config = function() 
       lsp = require("lspconfig")
 
+      -- Install with pip install ruff or brew install ruff
       lsp.ruff.setup{
         init_options = {
           settings = {
@@ -100,7 +101,23 @@ require("lazy").setup({
             args = {}
           }
         },
-      }
+      },
+      -- Install with npm install -g @ansible/ansible-language-server
+      lsp.ansiblels.setup{
+        validation = {
+          enabled = true,
+          lint = {
+            enabled = true,
+            path = "ansible-lint"
+          }
+        }
+      },
+      -- Install with npm i -g bash-language-server
+      lsp.bashls.setup{},
+      -- Install with cargo install gitlab-ci-ls
+      lsp.gitlab_ci_ls.setup{},
+      -- Install with npm i -g vscode-langservers-extracted
+      lsp.jsonls.setup{},
     end,
   },
 
