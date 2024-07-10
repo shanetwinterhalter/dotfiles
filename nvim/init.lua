@@ -100,8 +100,8 @@ require("lazy").setup({
             -- extra CLI arguments for ruff go here
             args = {}
           }
-        },
-      },
+        }
+      }
       -- Install with npm install -g @ansible/ansible-language-server
       lsp.ansiblels.setup{
         validation = {
@@ -111,13 +111,13 @@ require("lazy").setup({
             path = "ansible-lint"
           }
         }
-      },
+      }
       -- Install with npm i -g bash-language-server
-      lsp.bashls.setup{},
+      lsp.bashls.setup{}
       -- Install with cargo install gitlab-ci-ls
-      lsp.gitlab_ci_ls.setup{},
+      lsp.gitlab_ci_ls.setup{}
       -- Install with npm i -g vscode-langservers-extracted
-      lsp.jsonls.setup{},
+      lsp.jsonls.setup{}
     end,
   },
 
