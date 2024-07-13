@@ -1,5 +1,5 @@
 # Check if current session is SSH, if not start window manager
-if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && [ command -v Hyprland &>/dev/null ]; then
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ] && command -v Hyprland &> /dev/null; then
     exec Hyprland
 fi
 
