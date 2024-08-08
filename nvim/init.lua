@@ -1,3 +1,6 @@
+vim.g.mapleader = ","
+vim.g.maplocalleader = ","
+
 -- bootstrap plugin manager (lazy.nvim)
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -78,10 +81,10 @@ require("lazy").setup({
 
           api.config.mappings.default_on_attach(bufnr)
          
-          vim.keymap.set('n', '<C-b>', api.tree.toggle, opts('Toggle file explorer'))
-          vim.keymap.set('n', '<C-u>', api.tree.change_root_to_parent, opts('Move root directory up'))
-          vim.keymap.set('n', '<C-d>', down_node, opts('Change root directory to node under cursor'))
-          vim.keymap.set('n', '<C-[>', api.tree.collapse_all, opts('Collapse tree')) 
+          vim.keymap.set('n', '<leader>b', api.tree.toggle, opts('Toggle file explorer'))
+          vim.keymap.set('n', '<leader>u', api.tree.change_root_to_parent, opts('Move root directory up'))
+          vim.keymap.set('n', '<leader>d', down_node, opts('Change root directory to node under cursor'))
+          vim.keymap.set('n', '<leader>[', api.tree.collapse_all, opts('Collapse tree')) 
   	end
       })
     end,
@@ -123,9 +126,45 @@ require("lazy").setup({
   },
 
   -- github copilot
+  --{
+  --  "github/copilot.vim"
+  --},
+  
+  -- local plugin
   {
-    "github/copilot.vim"
-  }
+    "shanetwinterhalter/llms.nvim",
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local system_prompt = 'You should replace the code that you are sent, only following the comments. Do not talk at all. Only output valid code. Do not provide any backticks that surround the code. Never ever output backticks like this ```. Any comment that is asking you for something should be removed after you satisfy them. Other comments should left alone. Do not output backticks'
+      local helpful_prompt = 'You are a helpful assistant. What I have sent are my notes so far. You are very curt , yet helpful'
+      local model = 'gpt-4o-mini'
+      local api_endpoint = 'https://api.openai.com/v1/chat/completions'
+      local llm = require("llms")
+
+      local function openai_help()
+        llm.invoke_llm_and_stream_into_editor({
+          url = api_endpoint, 
+          model = model, 
+          api_key_name = 'OPENAI_API_KEY',
+          system_prompt = helpful_prompt,
+          replace = false
+        })
+      end
+
+      local function openai_replace()
+        llm.invoke_llm_and_stream_into_editor({
+          url = api_endpoint, 
+          model = model,
+          api_key_name = 'OPENAI_API_KEY',
+          system_prompt = system_prompt,
+          replace = true
+        })
+      end
+
+      vim.keymap.set({ 'n', 'v' }, '<leader>K', openai_help, { desc = 'llms openai help' })
+      vim.keymap.set({ 'n', 'v' }, '<leader>k', openai_replace, { desc = 'llms openai code' })
+    end,
+  },
 })
 
 --
@@ -163,4 +202,4 @@ vim.opt.wrap = true
 -- Key bindings
 
 -- File tree
-vim.keymap.set('n', '<C-b>', ':NvimTreeToggle<CR>') 
+vim.keymap.set('n', '<leader>b', ':NvimTreeToggle<CR>') 

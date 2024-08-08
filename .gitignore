@@ -1,3 +1,4 @@
 .*
 zsh-plugins
 local-zsh-conf
+nvim/lazy-lock.json
