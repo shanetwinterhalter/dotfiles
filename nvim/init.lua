@@ -104,6 +104,7 @@ require("lazy").setup({
       }
       -- Install with npm install -g @ansible/ansible-language-server
       lsp.ansiblels.setup{
+        filetypes = { "yaml", "yml" },
         validation = {
           enabled = true,
           lint = {
