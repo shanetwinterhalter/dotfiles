@@ -199,6 +199,8 @@ vim.opt.tabstop = 2
 vim.opt.autoindent = true
 vim.opt.wrap = true
 
+vim.wo.relativenumber = true
+
 -- Key bindings
 
 -- File tree
