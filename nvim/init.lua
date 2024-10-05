@@ -22,30 +22,116 @@ vim.opt.rtp:prepend(lazypath)
 -- Plugins
 --
 require("lazy").setup({
-  -- Set color scheme
-  {
-    "ellisonleao/gruvbox.nvim",
-    priority = 1000,
-    config = function()
-	    require("gruvbox").setup({
-		    terminal_colors = true,
-		    contrast = "hard",
-	    })
-	    vim.cmd([[colorscheme gruvbox]])
-    end,
-  },
-
+  -- Appearance plugins
   -- Configure status bar
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function ()
       require("lualine").setup({
-        options = { theme = 'gruvbox' },
+        options = { theme = 'material' },
+      })
+    end
+  },
+  -- Set color scheme
+  {
+    "marko-cerovac/material.nvim",
+    config = function ()
+      require("material").setup({
+        contrast = {
+          terminal = true,
+          sidebars = true,
+        },
+        high_visibility = {
+          darker = true,
+        },
+        lualine_style = "default",
       })
     end,
   },
+  --
   
+  -- Language plugins
+  -- treesitter (syntax highlighting)
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function ()
+      local configs = require("nvim-treesitter.configs")
+
+      configs.setup({
+        ensure_installed = { "lua", "vim", "vimdoc", "javascript", "python", "bash", "dockerfile", "html", "json", "yaml" },
+        sync_install = false,
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end
+  },
+
+  -- confirm (formatter)
+  {
+    "stevearc/conform.nvim",
+    config = function ()
+      conform = require("conform")
+      conform.setup({
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_format = "fallback",
+        },
+        formatters_by_ft = {
+          python = { "ruff_format", "ruff_fix", "ruff_organize_imports" },
+          javascript = { "eslint_d" },
+  	},
+      })
+    end
+  },
+
+  -- lsp config
+  {
+    "neovim/nvim-lspconfig",
+    config = function() 
+      lsp = require("lspconfig")
+
+      -- Install with pip install ruff or brew install ruff
+      lsp.ruff.setup{
+        init_options = {
+          settings = {
+            -- extra CLI arguments for ruff go here
+            args = {}
+          }
+        }
+      }
+      -- Install with npm install -g @ansible/ansible-language-server
+      lsp.ansiblels.setup{
+        filetypes = { "yaml", "yml" },
+        validation = {
+          enabled = true,
+          lint = {
+            enabled = true,
+            path = "ansible-lint"
+          }
+        }
+      }
+      -- Install with npm i -g bash-language-server
+      lsp.bashls.setup{}
+      -- Install with cargo install gitlab-ci-ls
+      lsp.gitlab_ci_ls.setup{}
+      -- Install with npm i -g vscode-langservers-extracted
+      lsp.jsonls.setup{}
+      -- Install with npm i -g vscode-langservers-extracted
+      lsp.eslint.setup({
+        on_attach = function(client, bufnr)
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "EslintFixAll",
+          })
+        end,
+      })
+    end,
+  },
+
+
+  -- Functionality plugins
   -- File explorer
   {
     "nvim-tree/nvim-tree.lua",
@@ -54,7 +140,8 @@ require("lazy").setup({
       require("nvim-tree").setup({
         sort_by = "case_sensitive",
         filters = {
-          dotfiles = true,
+          dotfiles = false,
+          custom = { '^.git$' },
         },
         actions = {
           open_file = {
@@ -90,41 +177,18 @@ require("lazy").setup({
     end,
   },
 
-  -- lsp config
+  -- telescope
   {
-    "neovim/nvim-lspconfig",
-    config = function() 
-      lsp = require("lspconfig")
-
-      -- Install with pip install ruff or brew install ruff
-      lsp.ruff.setup{
-        init_options = {
-          settings = {
-            -- extra CLI arguments for ruff go here
-            args = {}
-          }
-        }
-      }
-      -- Install with npm install -g @ansible/ansible-language-server
-      lsp.ansiblels.setup{
-        filetypes = { "yaml", "yml" },
-        validation = {
-          enabled = true,
-          lint = {
-            enabled = true,
-            path = "ansible-lint"
-          }
-        }
-      }
-      -- Install with npm i -g bash-language-server
-      lsp.bashls.setup{}
-      -- Install with cargo install gitlab-ci-ls
-      lsp.gitlab_ci_ls.setup{}
-      -- Install with npm i -g vscode-langservers-extracted
-      lsp.jsonls.setup{}
-    end,
+    "nvim-telescope/telescope.nvim",
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function ()
+	local builtin = require('telescope.builtin')
+	vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Telescope find files' })
+	vim.keymap.set('n', '<leader>g', builtin.live_grep, { desc = 'Telescope live grep' })
+	vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+	vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+    end
   },
-
   -- github copilot
   --{
   --  "github/copilot.vim"
@@ -170,6 +234,9 @@ require("lazy").setup({
 --
 -- Basic configuration
 --
+
+vim.cmd 'colorscheme material'
+vim.g.material_style = "deep ocean"
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
