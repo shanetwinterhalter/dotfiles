@@ -15,8 +15,8 @@
     ],
     "modules-right": [
         "hyprland/workspaces",
-        "bluetooth",
-        "wireplumber"
+        "wireplumber",
+        "clock"
     ],
     "margin": 0, // Margin around bar (px)
     "spacing": 4, // Spacing between modules (px)

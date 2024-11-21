@@ -17,5 +17,10 @@
         "format": "{volume}% {icon}",
         "format-muted": "",
         "format-icons": ["", "", ""]
+    },
+    "clock": {
+        "interval": 60,
+        "format": "{:%H:%M}",
+        "max_length": 25
     }
 }

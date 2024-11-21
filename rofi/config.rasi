@@ -1,2 +1,3 @@
 
-@theme "/usr/share/rofi/themes/arthur.rasi"
+//@theme "/usr/share/rofi/themes/arthur.rasi"
+@theme "/usr/share/rofi/themes/rounded-green-dark.rasi"
