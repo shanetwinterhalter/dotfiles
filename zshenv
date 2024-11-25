@@ -19,3 +19,4 @@ export VIMINIT='if !has("nvim")
 else
 	let $MYNVIMRC="$XDG_CONFIG_HOME/nvim/init.lua" | source $MYNVIMRC
 endif'
+. "$HOME/.cargo/env"
