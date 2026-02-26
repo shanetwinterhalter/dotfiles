@@ -35,3 +35,6 @@ if [[ -f ${ZDOTDIR:a}/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlightin
     source ${ZDOTDIR:a}/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 fi
+
+# bun completions
+[ -s "/Users/shanew/.bun/_bun" ] && source "/Users/shanew/.bun/_bun"

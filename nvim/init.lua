@@ -23,20 +23,18 @@ vim.opt.rtp:prepend(lazypath)
 --
 require("lazy").setup({
   -- Appearance plugins
-  -- Configure status bar
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function ()
+    config = function()
       require("lualine").setup({
         options = { theme = 'material' },
       })
     end
   },
-  -- Set color scheme
   {
     "marko-cerovac/material.nvim",
-    config = function ()
+    config = function()
       require("material").setup({
         contrast = {
           terminal = true,
@@ -49,18 +47,17 @@ require("lazy").setup({
       })
     end,
   },
-  --
-  
+
   -- Language plugins
-  -- treesitter (syntax highlighting)
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    config = function ()
-      local configs = require("nvim-treesitter.configs")
-
-      configs.setup({
-        ensure_installed = { "lua", "vim", "vimdoc", "javascript", "python", "bash", "dockerfile", "html", "json", "yaml" },
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = {
+          "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
+          "python", "bash", "dockerfile", "html", "json", "yaml",
+        },
         sync_install = false,
         highlight = { enable = true },
         indent = { enable = true },
@@ -68,20 +65,18 @@ require("lazy").setup({
     end
   },
 
-  -- confirm (formatter)
+  -- conform (formatter) - handles python; biome LSP handles JS/TS
   {
     "stevearc/conform.nvim",
-    config = function ()
-      conform = require("conform")
-      conform.setup({
+    config = function()
+      require("conform").setup({
         format_on_save = {
           timeout_ms = 500,
           lsp_format = "fallback",
         },
         formatters_by_ft = {
           python = { "ruff_format", "ruff_fix", "ruff_organize_imports" },
-          javascript = { "eslint_d" },
-  	},
+        },
       })
     end
   },
@@ -89,73 +84,61 @@ require("lazy").setup({
   -- lsp config
   {
     "neovim/nvim-lspconfig",
-    config = function() 
-      lsp = require("lspconfig")
-
-      -- Install with pip install ruff or brew install ruff
-      lsp.ruff.setup{
-        init_options = {
-          settings = {
-            -- extra CLI arguments for ruff go here
-            args = {}
-          }
-        }
-      }
-      -- Install with npm install -g @ansible/ansible-language-server
-      lsp.ansiblels.setup{
-        filetypes = { "yaml", "yml" },
-        validation = {
-          enabled = true,
-          lint = {
-            enabled = true,
-            path = "ansible-lint"
-          }
-        }
-      }
-      -- Install with npm i -g bash-language-server
-      lsp.bashls.setup{}
-      -- Install with cargo install gitlab-ci-ls
-      lsp.gitlab_ci_ls.setup{}
-      -- Install with npm i -g vscode-langservers-extracted
-      lsp.jsonls.setup{}
-      -- Install with npm i -g vscode-langservers-extracted
-      lsp.eslint.setup({
-        on_attach = function(client, bufnr)
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            command = "EslintFixAll",
-          })
-        end,
-      })
-      -- Install with 
-      lsp.rust_analyzer.setup({
-        on_attach = function(client, bufnr)
-          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-        end,
-        settings = {
-          ["rust-analyzer"] = {
-            imports = {
-              granularity = {
-                group = "module",
-              },
-              prefix = "self",
-            },
-            cargo = {
-              buildScripts = {
-                enable = true,
-              },
-            },
-            procMacro = {
-              enable = true
-            },
-        }
-      }
-    })
+    config = function()
+      vim.lsp.enable('bashls')
+      vim.lsp.enable('jsonls')
+      vim.lsp.enable('biome')
     end,
   },
 
+  -- Autocompletion
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+    },
+    config = function()
+      local cmp = require("cmp")
+      cmp.setup({
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "buffer" },
+          { name = "path" },
+        }),
+        mapping = cmp.mapping.preset.insert({
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.abort(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<C-n>"] = cmp.mapping.select_next_item(),
+          ["<C-p>"] = cmp.mapping.select_prev_item(),
+        }),
+      })
+    end,
+  },
 
-  -- Functionality plugins
+  -- Git integration
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup({
+        on_attach = function(bufnr)
+          local gs = require("gitsigns")
+          local map = function(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+          end
+          map("n", "]h", gs.next_hunk, "Next hunk")
+          map("n", "[h", gs.prev_hunk, "Previous hunk")
+          map("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
+          map("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
+          map("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+          map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, "Blame line")
+        end,
+      })
+    end,
+  },
+
   -- File explorer
   {
     "nvim-tree/nvim-tree.lua",
@@ -188,102 +171,92 @@ require("lazy").setup({
           local function down_node()
             local node = api.tree.get_node_under_cursor()
             return api.tree.change_root_to_node(node)
-	  end
+          end
 
           api.config.mappings.default_on_attach(bufnr)
-         
-          vim.keymap.set('n', '<leader>b', api.tree.toggle, opts('Toggle file explorer'))
+
           vim.keymap.set('n', '<leader>u', api.tree.change_root_to_parent, opts('Move root directory up'))
           vim.keymap.set('n', '<leader>d', down_node, opts('Change root directory to node under cursor'))
-          vim.keymap.set('n', '<leader>[', api.tree.collapse_all, opts('Collapse tree')) 
-  	end
+          vim.keymap.set('n', '<leader>[', api.tree.collapse_all, opts('Collapse tree'))
+        end
       })
     end,
   },
 
-  -- telescope
+  -- Telescope (fuzzy finder)
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function ()
-	local builtin = require('telescope.builtin')
-	vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Telescope find files' })
-	vim.keymap.set('n', '<leader>g', builtin.live_grep, { desc = 'Telescope live grep' })
-	vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
-	vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    },
+    config = function()
+      local telescope = require('telescope')
+      telescope.setup({})
+      telescope.load_extension('fzf')
+
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Telescope find files' })
+      vim.keymap.set('n', '<leader>g', builtin.live_grep, { desc = 'Telescope live grep' })
+      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
     end
   },
-  -- github copilot
-  --{
-  --  "github/copilot.vim"
-  --},
-  
-  -- local plugin
+
+  -- which-key (shows available keybindings on leader press)
   {
-    "shanetwinterhalter/llms.nvim",
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    "folke/which-key.nvim",
+    event = "VeryLazy",
     config = function()
-      local system_prompt = 'You should replace the code that you are sent, only following the comments. Do not talk at all. Only output valid code. Do not provide any backticks that surround the code. Never ever output backticks like this ```. Any comment that is asking you for something should be removed after you satisfy them. Other comments should left alone. Do not output backticks'
-      local helpful_prompt = 'You are a helpful assistant. What I have sent are my notes so far. You are very curt , yet helpful'
-      local model = 'gpt-4o-mini'
-      local api_endpoint = 'https://api.openai.com/v1/chat/completions'
-      local llm = require("llms")
-
-      local function openai_help()
-        llm.invoke_llm_and_stream_into_editor({
-          url = api_endpoint, 
-          model = model, 
-          api_key_name = 'OPENAI_API_KEY',
-          system_prompt = helpful_prompt,
-          replace = false
-        })
-      end
-
-      local function openai_replace()
-        llm.invoke_llm_and_stream_into_editor({
-          url = api_endpoint, 
-          model = model,
-          api_key_name = 'OPENAI_API_KEY',
-          system_prompt = system_prompt,
-          replace = true
-        })
-      end
-
-      vim.keymap.set({ 'n', 'v' }, '<leader>K', openai_help, { desc = 'llms openai help' })
-      vim.keymap.set({ 'n', 'v' }, '<leader>k', openai_replace, { desc = 'llms openai code' })
+      require("which-key").setup()
     end,
   },
+
+  -- Comment toggling (gcc to toggle line, gc in visual mode)
+  {
+    "numToStr/Comment.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("Comment").setup()
+    end,
+  },
+
+  -- Markdown preview
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && npx --yes yarn install",
+    ft = { "markdown" },
+  }
 })
 
 --
 -- Basic configuration
 --
 
-vim.cmd 'colorscheme material'
 vim.g.material_style = "deep ocean"
+vim.cmd 'colorscheme material'
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors = true
 
-vim.opt.number = true        -- Show line numbers
-vim.opt.showmatch = true     -- Highlight matching parenthesis
-vim.opt.splitright = true    -- Split windows right to the current windows
-vim.opt.splitbelow = true    -- Split windows below to the current windows
-vim.opt.autowrite = true     -- Automatically save before :next, :make etc.
-vim.opt.autochdir = true     -- Change CWD when I open a file
+vim.opt.number = true
+vim.opt.showmatch = true
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.autowrite = true
 
-vim.opt.mouse = 'a'                -- Enable mouse support
-vim.opt.clipboard = 'unnamedplus'  -- Copy/paste to system clipboard
-vim.opt.swapfile = false           -- Don't use swapfile
-vim.opt.ignorecase = true          -- Search case insensitive...
-vim.opt.smartcase = true           -- ... but not it begins with upper case 
-vim.opt.completeopt = 'menuone,noinsert,noselect'  -- Autocomplete options
+vim.opt.mouse = 'a'
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.swapfile = false
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.completeopt = 'menuone,noinsert,noselect'
 
 vim.opt.undofile = true
 
--- Indent settings
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
@@ -293,6 +266,19 @@ vim.opt.wrap = true
 vim.wo.relativenumber = true
 
 -- Key bindings
+vim.keymap.set('n', '<leader>b', ':NvimTreeToggle<CR>')
 
--- File tree
-vim.keymap.set('n', '<leader>b', ':NvimTreeToggle<CR>') 
+-- LSP keybindings (attached per-buffer when an LSP connects)
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local buf = args.buf
+    local map = function(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc })
+    end
+    map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+    map("n", "gr", vim.lsp.buf.references, "References")
+    map("n", "K", vim.lsp.buf.hover, "Hover docs")
+    map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+    map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+  end,
+})
