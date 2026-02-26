@@ -39,9 +39,12 @@ require("lazy").setup({
         contrast = {
           terminal = true,
           sidebars = true,
+          floating_windows = true,
+          non_current_windows = true,
         },
         high_visibility = {
           darker = true,
+          lighter = true,
         },
         lualine_style = "default",
       })
@@ -234,7 +237,7 @@ require("lazy").setup({
 -- Basic configuration
 --
 
-vim.g.material_style = "deep ocean"
+vim.g.material_style = "darker"
 vim.cmd 'colorscheme material'
 
 vim.g.loaded_netrw = 1
