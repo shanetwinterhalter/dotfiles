@@ -5,6 +5,9 @@ return {
     { "<leader>E", "<leader>fe", desc = "Explorer (root dir)", remap = true },
   },
   opts = {
+    styles = {
+      notification = { focusable = false },
+    },
     picker = {
       sources = {
         explorer = {
